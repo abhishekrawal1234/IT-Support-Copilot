@@ -1,8 +1,12 @@
 import time
 from pinecone import Pinecone,ServerlessSpec
+from dotenv import load_dotenv
+load_dotenv()
 from langchain_openai import OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from app.core.config import get_settings
+import os
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_huggingface import HuggingFaceEmbeddings
 settings=get_settings()
 _embeddings=None
@@ -12,7 +16,9 @@ EMBEDDING_DIMENSIONS = {
     "text-embedding-3-small": 1536,
     "text-embedding-3-large": 3072,
     "text-embedding-ada-002": 1536,
-    "all-minilm-l6-v2": 384
+    "all-minilm-l6-v2": 384,
+    "gemini-embedding-001":1536
+    
 }
 
 #finding dimension
@@ -28,7 +34,7 @@ def get_embedding_dimension(model_name: str | None = None) -> int:
         return 1536
     if "text-embedding-3-large" in normalized:
         return 3072
-    if "text-embedding-ada-002" in normalized:
+    if "gemini-embedding-001" in normalized:
         return 1536
     if "all-minilm-l6-v2" in normalized:
         return 384
@@ -44,8 +50,17 @@ def get_embeddings():
     global _embeddings
 
     if _embeddings is None:
-        _embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-MiniLM-L6-v2"
+        api_key = os.getenv("GEMINI_API_KEY")
+
+        if not api_key:
+            raise RuntimeError(
+                "GEMINI_API_KEY missing. Check your .env file."
+            )
+
+        _embeddings = GoogleGenerativeAIEmbeddings(
+            model="models/gemini-embedding-001",
+            google_api_key=api_key,
+            output_dimensionality=1536
         )
 
     return _embeddings
