@@ -12,8 +12,8 @@ class Settings(BaseSettings):
     pinecone_api_key: str = ""
     pinecone_index_name: str = "fde-it-support-rag"
     pinecone_namespace: str = "company-it-kb"
-    embedding_model: str = "text-embedding-3-small"
-    openai_model: str = "gpt-4o-mini"
+    embedding_model: str = "gemini-embedding-001"
+    openai_model: str = "gpt-5.4-mini"
     top_k: int = 4
     max_retries: int = 1
     admin_api_key: str = "@BSH8851@#"

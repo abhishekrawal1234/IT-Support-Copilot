@@ -212,4 +212,3 @@ Protected by the `X-Admin-Key` request header.
 Uploads a document and adds its chunks to Pinecone.
 
 ---
-
